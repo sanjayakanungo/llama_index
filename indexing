@@ -4,9 +4,9 @@
 !pip install torch transformers python-pptx Pillow
 
 import os
-
 os.environ["REPLICATE_API_TOKEN"] = "YOUR API KEY"
 
+# Base LLM
 from llama_index.llms import Replicate
 
 llama2_7b_chat = "meta/llama-2-7b-chat:8e6975e5ed6174911a6ff3d60540dfd4844201974602551e10e9e87ab143d81e"
@@ -24,6 +24,7 @@ set_global_tokenizer(
     AutoTokenizer.from_pretrained("NousResearch/Llama-2-7b-chat-hf").encode
 )
 
+# Embedding Model
 from llama_index.embeddings import HuggingFaceEmbedding
 from llama_index import ServiceContext
 
@@ -32,6 +33,7 @@ service_context = ServiceContext.from_defaults(
     llm=llm, embed_model=embed_model
 )
 
+# Data Loading & Indexing
 from llama_index import VectorStoreIndex, SimpleDirectoryReader
 
 documents = SimpleDirectoryReader("/content/data").load_data()
@@ -39,5 +41,7 @@ index = VectorStoreIndex.from_documents(
     documents, service_context=service_context
 )
 
+# Querying LLM
 query_engine = index.as_query_engine()
-query_engine.query("YOUR QUERY")
+response = query_engine.query("YOUR QUERY")
+print(response)
